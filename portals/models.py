@@ -12,3 +12,8 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
         ordering = ("-created_on",)
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        ret['id'] = instance.id
+        return ret

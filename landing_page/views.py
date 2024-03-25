@@ -3,9 +3,7 @@ from rest_framework.views import APIView
 from .serializers import *
 from rest_framework.response import Response
 from rest_framework import status
-from django.core.paginator import Paginator
-import math
-from rest_framework.pagination import PageNumberPagination
+
 
 
 # Create your views here.
@@ -100,162 +98,15 @@ class CategoryAPIViewPagination(APIView):
         limit = page_size
 
         cat = Category.objects.all()
-
         paginated_category = cat[offset:offset + limit]
-
         all_category_data = []
-
         for c1 in paginated_category:            
-
             # campaign_image_url = c1.image.url if c1.image else None
-
             api_data = {
                 'category image': c1.image.url,
                 'title':c1.title,
             }
-
             all_category_data.append(api_data)
-
         return Response(all_category_data, status=status.HTTP_200_OK)
     
 
-################## Product ###########################################
-
-
-class ProductApi(APIView):
-    def post(self, request):
-        serializer = ProductSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    def get(self, request):
-        camp = Product.objects.all()
-        serializer = ProductSerializer(camp,many = True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class CustomPagination(PageNumberPagination):
-        page_size = 2  # Number of items per page
-        page_size_query_param = 'limit'
-        max_page_size = 10  # Maximum number of items per page
-
-class ProductByCategoryApi(APIView):
-    def get(self, request, cat_id):
-        try:
-            # Retrieve data for the specified category
-            data = Product.objects.filter(category=cat_id)
-            if cat_id is None:
-                    return Response({"error": True, "message": "Category ID is required"}, status=status.HTTP_400_BAD_REQUEST)
-
-            data = Product.objects.filter(category=cat_id)
-            if not data.exists():
-                    return Response({"error": True, "message": "No products found for the given category"}, status=status.HTTP_404_NOT_FOUND)
-
-            paginator = CustomPagination()
-            result_page = paginator.paginate_queryset(data, request)
-            serializer = ProductSerializer(result_page, many=True)
-
-            return Response(serializer.data)
-
-
-        except Exception as e:
-                return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ProductPutApi(APIView):
-    def put(self, request,id):
-        try:
-            instance = Product.objects.get(pk=id)
-        except Product.DoesNotExist:
-            return Response({"error" : "Product not found"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = ProductSerializer(instance, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    def delete(self, request, id):
-        try:
-            instance = Product.objects.get(pk=id)
-            instance.delete()
-            return Response({"message" : "Product deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-        except Product.DoesNotExist:
-            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-#######################  Enquiry #############################3
-
-class BrochureApi(APIView):
-    def post(self, request):
-        serializer = BrochureSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-from django.db import transaction
-
-class ProductBrochureApi(APIView):
-    def post(self, request):
-        product_serializer = ProductSerializer(data=request.data)
-        brochure_serializer = BrochureSerializer(data=request.data)
-        if product_serializer.is_valid() and brochure_serializer.is_valid():
-            with transaction.atomic():
-                product_instance = product_serializer.save()
-                brochure_instance = brochure_serializer.save(product=product_instance)
-            return Response({
-                "product": product_serializer.data,
-                "brochure": brochure_serializer.data
-            }, status=status.HTTP_201_CREATED)
-
-        else:
-            errors = {}
-            if not product_serializer.is_valid():
-                errors.update(product_serializer.errors)
-            if not brochure_serializer.is_valid():
-                errors.update(brochure_serializer.errors)
-            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-###########################  ProdutItem ##################################
-        
-class ProductItemApi(APIView):
-    def post(self,request):
-        serializer = ProductItemSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    def get(self, request):
-        product = ProductItem.objects.all()
-        serializer = ProductItemSerializer(product, many=True)
-        return Response(serializer.data)
-    
-
-class ProductItemPutApi(APIView):
-    def put(self, request,id):
-        try:
-            instance = ProductItem.objects.get(pk=id)
-        except ProductItem.DoesNotExist:
-            return Response({"error" : "ProductItem not found"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = ProductItemSerializer(instance, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    def delete(self, request, id):
-        try:
-            instance = ProductItem.objects.get(pk=id)
-            instance.delete()
-            return Response({"message" : "ProductItem deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-        except ProductItem.DoesNotExist:
-            return Response({"error": "ProductItem not found"}, status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

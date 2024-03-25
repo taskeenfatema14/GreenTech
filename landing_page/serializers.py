@@ -12,15 +12,12 @@ class CategorySerializer(ModelSerializer):
         model = Category
         fields = ['image', 'title','link']
 
-class ProductSerializer(ModelSerializer):
+class CategorySerializer1(ModelSerializer):
     class Meta:
-        model = Product
-        fields = ['image', 'title']
+        model = Category
+        fields = ['id']
 
-class BrochureSerializer(ModelSerializer):
-    class Meta:
-            model  = Brochure
-            fields = ['productitem', 'detail', 'image']
+
 
 # from rest_framework.fields import UUIDField
 
@@ -37,8 +34,5 @@ class BrochureSerializer(ModelSerializer):
 #         return super().create(validated_data)
     
 
-class ProductItemSerializer(ModelSerializer):
-    class Meta:
-        model = ProductItem
-        fields = '__all__'
+
     

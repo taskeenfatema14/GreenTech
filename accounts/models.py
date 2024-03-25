@@ -4,13 +4,13 @@ from portals.models import BaseModel
 # from portals.choices import *
 from django.contrib.auth.models import AbstractBaseUser
 from .managers import UserManager
-from portals.choices import RoleChoices
+# from portals.choices import RoleChoices
 
 
-class UserRole(BaseModel):
-    role_name  = models.CharField(choices=RoleChoices.choices,max_length=25,unique=True,)
-    def __str__(self) -> str:
-        return self.role_name
+# class UserRole(BaseModel):
+#     role_name  = models.CharField(choices=RoleChoices.choices,max_length=25,unique=True,)
+#     def __str__(self) -> str:
+#         return self.role_name
 
 # Create your models here.
 
@@ -22,10 +22,11 @@ class User(AbstractBaseUser):
         unique=True,
     )
     username         = models.CharField(max_length = 50)
-    user_type        = models.CharField(choices=RoleChoices.choices,max_length=25,default=RoleChoices.USER)
+    # user_type        = models.CharField(choices=RoleChoices.choices,max_length=25,default=RoleChoices.USER)
     is_admin         = models.BooleanField(default=False)
     created_on       = models.DateTimeField(auto_now_add=True,editable=False)
     updated_on       = models.DateTimeField(auto_now=True)
+    otp              = models.PositiveIntegerField(null= True, blank=True)
 
     objects    = UserManager()
     

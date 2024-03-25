@@ -3,8 +3,8 @@ from .models import *
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import check_password
-
-
+from rest_framework import serializers
+from django.contrib.auth import get_user_model
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,12 +28,120 @@ class UserSerializer(serializers.ModelSerializer):
         return user  
 
 
-from rest_framework import serializers
-from django.contrib.auth import get_user_model
-# from django.contrib.auth.models import User
+class LoginSerializer(serializers.Serializer):
+    email = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, style={'input_type': 'password'})
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+
+        user = User.objects.filter(username=email).first()
+        if user and user.check_password(password):
+            return attrs
+        else:
+            raise serializers.ValidationError('Invalid email or password.')
 
 
-# User = get_user_model()
+
+class ForgotPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+    def validate(self, data):
+        email = data.get('email')
+
+        if not email:
+            raise ValidationError({'message': 'Email is required.'})
+
+        user = User.objects.filter(email=email).first()
+
+        if not user:
+            raise ValidationError({'message': 'Email not found in the database.'})
+
+        return data
+    
+class VerifyForgotOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    otp = serializers.CharField(required=True)
+
+    def validate(self, data):
+        email = data.get('email')
+        otp = data.get('otp').strip()
+        print(otp)
+
+        if not (email and otp):
+            raise ValidationError({'message': 'Email and OTP are required.'})
+
+        user = User.objects.filter(email=email).first()
+        print(user)
+
+        if not user or user.otp != otp:
+            print("in this not equal block")
+            raise ValidationError({'message': 'Invalid email or OTP.'})
+
+        return data
+    
+
+class ForgotPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+    def validate(self, data):
+        email = data.get('email')
+
+        if not email:
+            raise ValidationError({'message': 'Email is required.'})
+
+        user = User.objects.filter(email=email).first()
+
+        if not user:
+            raise ValidationError({'message': 'Email not found in the database.'})
+
+        return data
+    
+class VerifyForgotOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    otp = serializers.CharField(required=True)
+
+    def validate(self, data):
+        email = data.get('email')
+        otp = data.get('otp')
+
+        if not (email and otp):
+            raise ValidationError({'message': 'Email and OTP are required.'})
+
+        user = User.objects.filter(email=email).first()
+
+        if not user or otp != otp:
+            raise ValidationError({'message': 'Invalid email or OTP.'})
+
+        return data
+    
+class SetNewPasswordSerializer(serializers.Serializer):
+    new_password = serializers.CharField(required=True)
+    confirm_password = serializers.CharField(required=True)
+
+    def validate(self, data):
+        new_password = data.get('new_password')
+        confirm_password = data.get('confirm_password')
+
+        if not (new_password and confirm_password):
+            raise ValidationError({'message': 'New password and confirm password are required.'})
+
+        if new_password != confirm_password:
+            raise ValidationError({'message': 'New password and confirm password do not match.'})
+
+        return data
+    
+    def save(self):
+        print("Save")
+        email = self.context.get('email')  # Retrieve email from context
+        user = User.objects.get(email=email)
+        user.set_password(self.validated_data['new_password'])
+        user.save()
+        print("Save1")
+
+
+User = get_user_model()
 
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
@@ -94,21 +202,6 @@ class EnquirySerializer(ModelSerializer):
         fields = '__all__'
 
 
-from rest_framework import serializers
-from django.contrib.auth import get_user_model
 
-User = get_user_model()
 
-class LoginSerializer(serializers.Serializer):
-    email = serializers.CharField(required=True)
-    password = serializers.CharField(required=True, style={'input_type': 'password'})
 
-    def validate(self, attrs):
-        email = attrs.get('email')
-        password = attrs.get('password')
-
-        user = User.objects.filter(username=email).first()
-        if user and user.check_password(password):
-            return attrs
-        else:
-            raise serializers.ValidationError('Invalid email or password.')

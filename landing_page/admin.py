@@ -5,6 +5,3 @@ from landing_page.models import *
 
 admin.site.register(LandingImage)
 admin.site.register(Category)
-admin.site.register(Product)
-admin.site.register(Brochure)
-admin.site.register(ProductItem)
