@@ -11,11 +11,14 @@ urlpatterns = [
     path('productlist/',ProductListAPI.as_view()),
     
     path('productitem',ProductItemApi.as_view()),
-    path('productitemput/<uuid:id>/', ProductItemPutApi.as_view(), name='category-detail'),
+    path('productitemput/<uuid:id>/', ProductItemPutApi.as_view(), name='product'),
     path('productitembyproduct/<str:product_id>/', ProductItemByProduct.as_view(), name='productitem-detail'),
 
     path('productitems/<str:title>/', ProductItemByTitle.as_view(),),
 
     path('brochure',BrochureApi.as_view()),
     path('productbrochure',ProductBrochureApi.as_view()),
+    path('product-id/<uuid:id>/',ProductByIDApi.as_view()),
+
+    
 ]

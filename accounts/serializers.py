@@ -99,20 +99,16 @@ class ForgotPasswordSerializer(serializers.Serializer):
         return data
     
 class VerifyForgotOTPSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True)
     otp = serializers.CharField(required=True)
 
     def validate(self, data):
-        email = data.get('email')
         otp = data.get('otp')
 
-        if not (email and otp):
-            raise ValidationError({'message': 'Email and OTP are required.'})
+        if not otp:
+            raise ValidationError({'message': 'OTP is required.'})
 
-        user = User.objects.filter(email=email).first()
-
-        if not user or otp != otp:
-            raise ValidationError({'message': 'Invalid email or OTP.'})
+        if not User.objects.filter(otp=otp).exists():
+            raise ValidationError({'message': 'Invalid OTP.'})
 
         return data
     

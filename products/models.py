@@ -9,7 +9,7 @@ class Product(BaseModel):
     
 class ProductItem(BaseModel):
     product = models.ForeignKey(Product,on_delete=models.CASCADE, related_name='prodectitems', )
-    description = models.CharField(max_length=20,)
+    description = models.CharField(max_length=200,)
     image = models.ImageField(upload_to="category",blank=True,null=True,)
     title = models.CharField(max_length=20,blank=True,null=True,)
 

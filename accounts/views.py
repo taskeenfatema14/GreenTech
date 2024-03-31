@@ -463,6 +463,16 @@ class ForgotPasswordApi(APIView):
                 'message': 'Internal Server Error',
                 'data': str(e),
             })
+        
+    def get(self, request):
+        serializer = ForgotPasswordSerializer(data=request.query_params)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            # Process the email (e.g., send reset password email)
+            return Response({"message": "Password reset email sent successfully"}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 
 #**************************#
 class VerificationOtpApi(APIView):

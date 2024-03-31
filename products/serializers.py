@@ -11,12 +11,16 @@ class ProductSerializer1(ModelSerializer):
     class Meta:
         model = Product
         fields = ['id','image', 'title']
-
         
 class ProductItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductItem
         fields = ['id', 'product', 'description', 'image', 'title']
+
+class ProductItemSerializer1(serializers.ModelSerializer):
+    class Meta:
+        model = ProductItem
+        fields = '__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
     prodectitems = ProductItemSerializer(many=True, read_only=True)
@@ -28,7 +32,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class ProductListSerilaizer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['title']
+        fields = ['title', 'id']
 
         
 class BrochureSerializer(ModelSerializer):

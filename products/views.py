@@ -162,6 +162,26 @@ class ProductItemByTitle(APIView):
         product_items = ProductItem.objects.filter(product=product)
         serializer = ProductItemSerializer(product_items, many=True)
         return Response(serializer.data)
+    
+
+class ProductByIDApi(APIView):
+    def get(self, request, id):
+        try:
+            # Retrieve data for the specified category
+            data = ProductItem.objects.filter(id=id)
+            if id is None:
+                    return Response({"error": True, "message": "Product ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+            data = ProductItem.objects.filter(id=id)
+            if not data.exists():
+                    return Response({"error": True, "message": "No products found for the given ID"}, status=status.HTTP_404_NOT_FOUND)
+
+            paginator = CustomPagination()
+            result_page = paginator.paginate_queryset(data, request)
+            serializer = ProductItemSerializer1(result_page, many=True)
+
+            return Response(serializer.data)
+        except Exception as e:
+                return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 #######################  Enquiry #############################3
