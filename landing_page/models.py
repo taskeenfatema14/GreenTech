@@ -1,7 +1,7 @@
 from django.db import models
 
 from django.core.validators import FileExtensionValidator
-from portals.models import BaseModel
+from portals.base import BaseModel
 
 # Create your models here.
 

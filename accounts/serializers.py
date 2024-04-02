@@ -113,10 +113,12 @@ class VerifyForgotOTPSerializer(serializers.Serializer):
         return data
     
 class SetNewPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)  # Add email field
     new_password = serializers.CharField(required=True)
     confirm_password = serializers.CharField(required=True)
 
     def validate(self, data):
+        email = data.get('email')
         new_password = data.get('new_password')
         confirm_password = data.get('confirm_password')
 
@@ -126,15 +128,16 @@ class SetNewPasswordSerializer(serializers.Serializer):
         if new_password != confirm_password:
             raise ValidationError({'message': 'New password and confirm password do not match.'})
 
+        if not User.objects.filter(email=email).exists():
+            raise ValidationError({'message': 'User with this email does not exist.'})
+
         return data
     
     def save(self):
-        print("Save")
-        email = self.context.get('email')  # Retrieve email from context
+        email = self.validated_data.get('email')
         user = User.objects.get(email=email)
         user.set_password(self.validated_data['new_password'])
         user.save()
-        print("Save1")
 
 
 User = get_user_model()

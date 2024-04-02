@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-7vd=$0v!%xl@dhmdbtcvialwf1j)#!svxn$241gfa(x2^%oks5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.70', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*',]
 # ALLOWED_HOSTS = ['*']
 # ALLOWED_HOSTS = ['.vercel.app']
 
@@ -215,9 +215,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 EMAIL_HOST = 'smtp.gmail.com'  
 EMAIL_PORT = 587  
 EMAIL_USE_TLS = True 
-EMAIL_USE_SSL = False # Set to False if your email server doesn't use TLS
-EMAIL_HOST_USER = 'fatemataskeen14@gmail.com'  # Replace with your email username
-EMAIL_HOST_PASSWORD = 'vkhv hyag ikgf rdqa'  # Replace with your email password
+EMAIL_USE_SSL = False 
+EMAIL_HOST_USER = 'fatemataskeen14@gmail.com' 
+EMAIL_HOST_PASSWORD = 'wnjj lnwj vcht kras'  
 
 
 ###username : taskeen, email:taskeen123@GMAIL.COM  password: admin12345

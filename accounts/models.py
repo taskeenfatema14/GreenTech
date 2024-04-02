@@ -1,10 +1,11 @@
 from django.db import models
 import uuid
-from portals.models import BaseModel
+from portals.base import BaseModel
 # from portals.choices import *
 from django.contrib.auth.models import AbstractBaseUser
 from .managers import UserManager
 # from portals.choices import RoleChoices
+
 
 
 # class UserRole(BaseModel):
@@ -51,27 +52,6 @@ class User(AbstractBaseUser):
     def __str__(self) -> str:
         return self.email
 
-# class Admin1(models.Model):
-#     id         = models.UUIDField(default=uuid.uuid4,primary_key=True)
-#     email      = models.EmailField(
-#         verbose_name='email address',
-#         max_length=255,
-#         unique=True,
-#     )
-#     username         = models.CharField(max_length = 50)
-#     password         = models.CharField(max_length = 16)
-
-#     def save(self,*args, **kwargs):
-#         # check the record count if it is one then update the existing one otherwise save the record 
-#         count = Admin1.objects.count()
-#         print(count)
-#         if count == 0  :
-#             return super(Admin1,self).save(*args, **kwargs)
-#         else :
-#             obj = Admin1.objects.all()
-#             obj.delete()
-#             return super(Admin1,self).save(*args, **kwargs)
-        
 
 class Enquiry(BaseModel):
     user = models.ForeignKey(User, on_delete =models.CASCADE, related_name="enquiries")
