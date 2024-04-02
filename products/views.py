@@ -9,9 +9,7 @@ from django.core.paginator import Paginator
 import math
 from rest_framework.pagination import PageNumberPagination
 from django.db import transaction
-
-
-################## Product ###########################################
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 class ProductApi(APIView):
@@ -76,7 +74,6 @@ class ProductPutApi(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 class ProductPagination(APIView):
     def get(self, request):
@@ -103,8 +100,9 @@ class ProductListAPI(APIView):
         serializer = ProductListSerilaizer(data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-###########################  ProdutItem ##################################
-        
+
+
+
 class ProductItemApi(APIView):
     def post(self,request):
         serializer = ProductItemSerializer(data=request.data)

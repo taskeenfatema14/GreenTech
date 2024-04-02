@@ -1,17 +1,17 @@
 from django.db import models
-from portals.models import BaseModel
+from portals.base import BaseModel
 # Create your models here.
 
 class Product(BaseModel):
     image = models.ImageField(upload_to="category",blank=True,null=True,)
-    title = models.CharField(max_length=20,blank=True,null=True,) 
-    # category = models.ForeignKey(Category,on_delete=models.CASCADE, related_name='product', )
+    title = models.CharField(max_length=50,blank=True,null=True,) 
+
     
 class ProductItem(BaseModel):
     product = models.ForeignKey(Product,on_delete=models.CASCADE, related_name='prodectitems', )
     description = models.CharField(max_length=200,)
     image = models.ImageField(upload_to="category",blank=True,null=True,)
-    title = models.CharField(max_length=20,blank=True,null=True,)
+    title = models.CharField(max_length=50,blank=True,null=True,)
 
 
 class Brochure(BaseModel):
