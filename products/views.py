@@ -116,7 +116,32 @@ class ProductItemApi(APIView):
         serializer = ProductItemSerializer(product, many=True)
         return Response(serializer.data)
     
+class ProductItemBrochureApi(APIView):
+    def post(self,request):
+        serializer = ProductItemBrochureSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request):
+        product = Brochure.objects.all()
+        serializer = ProductItemBrochureSerializer(product, many=True)
+        return Response(serializer.data)
 
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+class GetBrochureApi(APIView):
+    def get(self, request, id):
+        try:
+            demo  = get_object_or_404(Brochure, id=id)
+            file_path = demo.brochure.path
+            return JsonResponse({'file_path': file_path, 'id':id})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+
+    
 class ProductItemPutApi(APIView):
     def put(self, request,id):
         try:
@@ -183,14 +208,6 @@ class ProductByIDApi(APIView):
 
 
 #######################  Enquiry #############################3
-
-class BrochureApi(APIView):
-    def post(self, request):
-        serializer = BrochureSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Working for Seperately passing brochure and product

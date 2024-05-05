@@ -8,5 +8,5 @@ from products.models import *
 
 
 admin.site.register(Product)
-admin.site.register(Brochure)
 admin.site.register(ProductItem)
+admin.site.register(Brochure)
